@@ -1,0 +1,138 @@
+version: 2
+
+jobs:
+  install:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - node_modules-node_latest-{{ checksum "package.json" }}
+      - run:
+          name: Install dependancies
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: node_modules-node_latest-{{ checksum "package.json" }}
+
+  test-node_8:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - node_modules-node_8-{{ checksum "package.json" }}
+      - run:
+          name: Install dependancies
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: node_modules-node_8-{{ checksum "package.json" }}
+      - run:
+          name: Run Tests
+          command: npm test
+
+  test-node_10:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - node_modules-node_10-{{ checksum "package.json" }}
+      - run:
+          name: Install dependancies
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: node_modules-node_10-{{ checksum "package.json" }}
+      - run:
+          name: Run Tests
+          command: npm test
+
+  test-node_latest:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - node_modules-node_latest-{{ checksum "package.json" }}
+      - run:
+          name: Install dependancies
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: node_modules-node_latest-{{ checksum "package.json" }}
+      - run:
+          name: Run Tests
+          command: npm test
+      - run:
+          name: Create Coverage
+          command: npx codecov
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - coverage.lcov
+
+  upload-coverage:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - node_modules-node_latest-{{ checksum "package.json" }}
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Upload Coverage
+          command: npx codecov
+
+  release:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - node_modules-node_latest-{{ checksum "package.json" }}
+      - run:
+          name: Release Package
+          command: npx semantic-release
+
+workflows:
+  version: 2
+  test-and-build:
+    jobs:
+      - install
+      - test:
+          requires:
+            - install
+      - upload-coverage:
+          requires:
+            - test-node_8
+            - test-node_10
+            - test-node_latest
+      - release:
+          requires:
+            - build
+              - test-node_8
+              - test-node_10
+              - test-node_latest
+          filters:
+            branches:
+              only:
+                - master

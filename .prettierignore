@@ -1,0 +1,8 @@
+dist
+docs
+node_modules
+package*.json
+oclif.manifest.json
+tmp
+dist
+\.nyc_output/

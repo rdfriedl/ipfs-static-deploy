@@ -1,0 +1,7 @@
+node_modules/
+\.idea
+test/
+tmp/
+dist/
+coverage.lcov
+\.nyc_output/
