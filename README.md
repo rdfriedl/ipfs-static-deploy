@@ -1,0 +1,1 @@
+ipfs-static-deploy
