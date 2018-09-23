@@ -1,7 +1,7 @@
 {
 	"name": "ipfs-static-deploy",
 	"description": "A simple CLI tool to deploy static sites to an IPFS node",
-	"version": "0.1.0",
+	"version": "0.0.1",
 	"author": "Robert Friedl",
 	"homepage": "https://github.com/rdfriedl/ipfs-static-deploy",
 	"license": "MIT",
@@ -24,6 +24,7 @@
 		"@oclif/command": "^1",
 		"@oclif/config": "^1",
 		"@oclif/plugin-help": "^2",
+		"chalk": "^2.4.1",
 		"ipfs-api": "^24.0.1"
 	},
 	"devDependencies": {
@@ -67,7 +68,6 @@
 	"prettier": {
 		"useTabs": true,
 		"semi": true,
-		"trailingComma": "all",
 		"printWidth": 80
 	},
 	"commitlint": {
