@@ -115,10 +115,16 @@ jobs:
 
 workflows:
   version: 2
-  test-and-build:
+  test-and-publish:
     jobs:
       - install
-      - test:
+      - test-node_8:
+          requires:
+            - install
+      - test-node_10:
+          requires:
+            - install
+      - test-node_latest:
           requires:
             - install
       - upload-coverage:
@@ -128,10 +134,9 @@ workflows:
             - test-node_latest
       - release:
           requires:
-            - build
-              - test-node_8
-              - test-node_10
-              - test-node_latest
+            - test-node_8
+            - test-node_10
+            - test-node_latest
           filters:
             branches:
               only:
