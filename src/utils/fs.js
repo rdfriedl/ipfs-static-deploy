@@ -12,17 +12,15 @@ async function isDir(dir) {
 async function walkDirectory(dir, callback = noop) {
 	let files = await fs.readdir(dir);
 
-	await files.reduce(async (promise, file) => {
+	for (let file of files) {
 		let filePath = path.resolve(dir, file);
-
-		await promise;
 
 		if (await isDir(filePath)) {
 			await walkDirectory(filePath, callback);
 		} else {
 			await callback(dir, path.basename(filePath));
 		}
-	});
+	}
 }
 
 module.exports = {

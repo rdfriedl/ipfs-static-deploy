@@ -1,7 +1,8 @@
 const { Command, flags } = require("@oclif/command");
 const path = require("path");
-const ipfsApi = require("ipfs-api");
+const ipfsClient = require("ipfs-http-client");
 const chalk = require("chalk");
+const glob = require("glob");
 
 const customFlags = require("../flags");
 const createUtils = require("../utils/ipfs");
@@ -11,7 +12,7 @@ class DeployCommand extends Command {
 	async run() {
 		const { flags } = this.parse(DeployCommand);
 
-		const ipfs = ipfsApi(flags.host);
+		const ipfs = ipfsClient(flags.host);
 		const utils = createUtils(ipfs);
 
 		const deployDate = new Date().toISOString();

@@ -2,10 +2,10 @@ const { flags } = require("@oclif/command");
 
 const host = flags.string({
 	char: "h",
-	description: "the address of the ipfs api",
+	description: "the multiaddr of the ipfs api",
 	required: true,
 	env: "IPFS_ADDRESS",
-	default: "localhost:8080"
+	default: "127.0.0.1:5001"
 });
 const path = flags.string({
 	char: "p",
