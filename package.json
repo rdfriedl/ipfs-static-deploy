@@ -44,7 +44,8 @@
 		"mocha": "^6.0.2",
 		"nyc": "^13.3.0",
 		"prettier": "^1.16.4",
-		"pretty-quick": "^1.10.0"
+		"pretty-quick": "^1.10.0",
+		"semantic-release": "^15.13.3"
 	},
 	"repository": "rdfriedl/ipfs-static-deploy",
 	"bugs": "https://github.com/rdfriedl/ipfs-static-deploy/issues",

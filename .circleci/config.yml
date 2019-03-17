@@ -1,23 +1,6 @@
 version: 2
 
 jobs:
-  install:
-    docker:
-      - image: circleci/node:latest
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - node_modules-node_latest-{{ checksum "package.json" }}
-      - run:
-          name: Install dependancies
-          command: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: node_modules-node_latest-{{ checksum "package.json" }}
-
   test-node_8:
     docker:
       - image: circleci/node:8
@@ -77,28 +60,28 @@ jobs:
       - run:
           name: Run Tests
           command: npm test
-      - run:
-          name: Create Coverage
-          command: npx codecov
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - coverage.lcov
-
-  upload-coverage:
-    working_directory: ~/repo
-    docker:
-      - image: circleci/node:latest
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - node_modules-node_latest-{{ checksum "package.json" }}
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Upload Coverage
-          command: npx codecov
+  #      - run:
+  #          name: Create Coverage
+  #          command: npx codecov
+  #      - persist_to_workspace:
+  #          root: ./
+  #          paths:
+  #            - coverage.lcov
+  #
+  #  upload-coverage:
+  #    working_directory: ~/repo
+  #    docker:
+  #      - image: circleci/node:latest
+  #    steps:
+  #      - checkout
+  #      - restore_cache:
+  #          keys:
+  #            - node_modules-node_latest-{{ checksum "package.json" }}
+  #      - attach_workspace:
+  #          at: ./
+  #      - run:
+  #          name: Upload Coverage
+  #          command: npx codecov
 
   release:
     docker:
@@ -110,28 +93,24 @@ jobs:
           keys:
             - node_modules-node_latest-{{ checksum "package.json" }}
       - run:
+          name: Install dependancies
+          command: npm install
+      - run:
           name: Release Package
-          command: npx semantic-release
+          command: ./node_modules/.bin/semantic-release
 
 workflows:
   version: 2
   test-and-publish:
     jobs:
-      - install
-      - test-node_8:
-          requires:
-            - install
-      - test-node_10:
-          requires:
-            - install
-      - test-node_latest:
-          requires:
-            - install
-      - upload-coverage:
-          requires:
-            - test-node_8
-            - test-node_10
-            - test-node_latest
+      - test-node_8
+      - test-node_10
+      - test-node_latest
+      #      - upload-coverage:
+      #          requires:
+      #            - test-node_8
+      #            - test-node_10
+      #            - test-node_latest
       - release:
           requires:
             - test-node_8
